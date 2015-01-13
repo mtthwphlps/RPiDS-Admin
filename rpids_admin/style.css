@@ -1,0 +1,217 @@
+/*  
+Theme Name: RPiDS Admin
+Theme URI: http://mtthwphlps.com/rpids/
+Version: 2.0
+Description: This theme powers the admin side of the RPiDS Digital Signage System.
+Author URI: http://mtthwphlps.com
+Tags: 
+Author: Matthew Phelps
+License: GPLv3
+*** DO NOT EDIT style.css, EDIT scss/style.scss INSTEAD ***
+*/
+/* HTML5 Boilerplate  What follows is the result of much research on cross-browser styling. Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal, Kroc Camen, and the H5BP dev community and team.  Detailed information about this CSS: h5bp.com/css  ==|== normalize ========================================================== */
+/* ============================================================================= HTML5 display definitions ========================================================================== */
+/* line 18, scss/_reset.scss */
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section { display: block; }
+
+/* line 19, scss/_reset.scss */
+audio, canvas, video { display: inline-block; *display: inline; *zoom: 1; }
+
+/* line 20, scss/_reset.scss */
+audio:not([controls]) { display: none; }
+
+/* line 21, scss/_reset.scss */
+[hidden] { display: none; }
+
+/* line 22, scss/_reset.scss */
+.wp-video { display: inline-block; }
+
+/* ============================================================================= Base ========================================================================== */
+/* 1. Correct text resizing oddly in IE6/7 when body font-size is set using em units 2. Prevent iOS text size adjust on device orientation change, without disabling user zoom: h5bp.com/g */
+/* line 33, scss/_reset.scss */
+html { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+
+/* line 35, scss/_reset.scss */
+html, button, input, select, textarea { font-family: sans-serif; color: #222; }
+
+/* line 37, scss/_reset.scss */
+body { margin: 0; font-size: 1em; line-height: 1; }
+
+/* Remove text-shadow in selection highlight: h5bp.com/i These selection declarations have to be separate Also: hot pink! (or customize the background color to match your design) */
+/* line 45, scss/_reset.scss */
+::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
+
+/* line 46, scss/_reset.scss */
+::selection { background: #fe57a1; color: #fff; text-shadow: none; }
+
+/* ============================================================================= Links ========================================================================== */
+/* line 53, scss/_reset.scss */
+a { color: #00e; }
+
+/* line 54, scss/_reset.scss */
+a:visited { color: #551a8b; }
+
+/* line 55, scss/_reset.scss */
+a:hover { color: #06e; }
+
+/* line 56, scss/_reset.scss */
+a:focus { outline: thin dotted; }
+
+/* Improve readability when focused and hovered in all browsers: h5bp.com/h */
+/* line 59, scss/_reset.scss */
+a:hover, a:active { outline: 0; }
+
+/* ============================================================================= Typography ========================================================================== */
+/* line 66, scss/_reset.scss */
+abbr[title] { border-bottom: 1px dotted; }
+
+/* line 68, scss/_reset.scss */
+b, strong { font-weight: bold; }
+
+/* line 70, scss/_reset.scss */
+blockquote { margin: 1em 40px; }
+
+/* line 72, scss/_reset.scss */
+dfn { font-style: italic; }
+
+/* line 74, scss/_reset.scss */
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0; }
+
+/* line 76, scss/_reset.scss */
+ins { background: #ff9; color: #000; text-decoration: none; }
+
+/* line 78, scss/_reset.scss */
+mark { background: #ff0; color: #000; font-style: italic; font-weight: bold; }
+
+/* Redeclare monospace font family: h5bp.com/j */
+/* line 81, scss/_reset.scss */
+pre, code, kbd, samp { font-family: monospace, serif; _font-family: 'courier new', monospace; font-size: 1em; }
+
+/* Improve readability of pre-formatted text in all browsers */
+/* line 84, scss/_reset.scss */
+pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; }
+
+/* line 86, scss/_reset.scss */
+q { quotes: none; }
+
+/* line 87, scss/_reset.scss */
+q:before, q:after { content: ""; content: none; }
+
+/* line 89, scss/_reset.scss */
+small { font-size: 85%; }
+
+/* Position subscript and superscript content without affecting line-height: h5bp.com/k */
+/* line 92, scss/_reset.scss */
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+
+/* line 93, scss/_reset.scss */
+sup { top: -0.5em; }
+
+/* line 94, scss/_reset.scss */
+sub { bottom: -0.25em; }
+
+/* ============================================================================= Lists ========================================================================== */
+/* line 101, scss/_reset.scss */
+ul, ol { margin: 1em 0; padding: 0 0 0 40px; }
+
+/* line 102, scss/_reset.scss */
+dd { margin: 0 0 0 40px; }
+
+/* line 103, scss/_reset.scss */
+nav ul, nav ol { list-style: none; list-style-image: none; margin: 0; padding: 0; }
+
+/* ============================================================================= Embedded content ========================================================================== */
+/* 1. Improve image quality when scaled in IE7: h5bp.com/d 2. Remove the gap between images and borders on image containers: h5bp.com/i/440 */
+/* line 115, scss/_reset.scss */
+img { border: 0; -ms-interpolation-mode: bicubic; vertical-align: middle; }
+
+/* Correct overflow not hidden in IE9 */
+/* line 121, scss/_reset.scss */
+svg:not(:root) { overflow: hidden; }
+
+/* ============================================================================= Figures ========================================================================== */
+/* line 128, scss/_reset.scss */
+figure { margin: 0; }
+
+/* ============================================================================= Forms ========================================================================== */
+/* line 135, scss/_reset.scss */
+form { margin: 0; }
+
+/* line 136, scss/_reset.scss */
+fieldset { border: 0; margin: 0; padding: 0; }
+
+/* Indicate that 'label' will shift focus to the associated form element */
+/* line 139, scss/_reset.scss */
+label { cursor: pointer; }
+
+/* 1. Correct color not inheriting in IE6/7/8/9 2. Correct alignment displayed oddly in IE6/7 */
+/* line 146, scss/_reset.scss */
+legend { border: 0; *margin-left: -7px; padding: 0; white-space: normal; }
+
+/* 1. Correct font-size not inheriting in all browsers 2. Remove margins in FF3/4 S5 Chrome 3. Define consistent vertical alignment display in all browsers */
+/* line 154, scss/_reset.scss */
+button, input, select, textarea { font-size: 100%; margin: 0; vertical-align: baseline; *vertical-align: middle; }
+
+/* 1. Define line-height as normal to match FF3/4 (set using !important in the UA stylesheet) */
+/* line 160, scss/_reset.scss */
+button, input { line-height: normal; }
+
+/* 1. Display hand cursor for clickable form elements 2. Allow styling of clickable form elements in iOS 3. Correct inner spacing displayed oddly in IE7 (doesn't effect IE6) */
+/* line 168, scss/_reset.scss */
+button, input[type="button"], input[type="reset"], input[type="submit"] { cursor: pointer; -webkit-appearance: button; *overflow: visible; }
+
+/* Re-set default cursor for disabled elements */
+/* line 174, scss/_reset.scss */
+button[disabled], input[disabled] { cursor: default; }
+
+/* Consistent box sizing and appearance */
+/* line 180, scss/_reset.scss */
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; padding: 0; *width: 13px; *height: 13px; }
+
+/* line 181, scss/_reset.scss */
+input[type="search"] { -webkit-appearance: textfield; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; }
+
+/* line 182, scss/_reset.scss */
+input[type="search"]::-webkit-search-decoration, input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+/* Remove inner padding and border in FF3/4: h5bp.com/l */
+/* line 188, scss/_reset.scss */
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+
+/* 1. Remove default vertical scrollbar in IE6/7/8/9 2. Allow only vertical resizing */
+/* line 195, scss/_reset.scss */
+textarea { overflow: auto; vertical-align: top; resize: vertical; }
+
+/* Colors for form validity */
+/* line 199, scss/_reset.scss */
+input:invalid, textarea:invalid { background-color: #f0dddd; }
+
+/* ============================================================================= Tables ========================================================================== */
+/* line 206, scss/_reset.scss */
+table { border-collapse: collapse; border-spacing: 0; }
+
+/* line 207, scss/_reset.scss */
+td { vertical-align: top; }
+
+/* ============================================================================= Chrome Frame Prompt ========================================================================== */
+/* line 214, scss/_reset.scss */
+.chromeframe { margin: 0.2em 0; background: #ccc; color: black; padding: 0.2em 0; }
+
+/* ============================================================================= Standard WordPress Styles ========================================================================== */
+/* line 5, scss/_wordpress.scss */
+img.centered, .aligncenter { display: block; margin-left: auto; margin-right: auto; }
+
+/* line 10, scss/_wordpress.scss */
+img.alignright { padding: 4px; margin: 0 0 2px 7px; display: inline; }
+
+/* line 15, scss/_wordpress.scss */
+img.alignleft { padding: 4px; margin: 0 7px 2px 0; display: inline; }
+
+/* line 20, scss/_wordpress.scss */
+.alignright { float: right; }
+
+/* line 23, scss/_wordpress.scss */
+.alignleft { float: left; }
+
+/* Custom Fonts */
+/* Page Styles */
