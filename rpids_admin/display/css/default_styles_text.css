@@ -1,0 +1,21 @@
+/*
+Default screen styles
+*/
+
+#container > .text > div {
+	width: 100%;
+	height: 100%;
+	color: #FFFFFF;
+	text-align: left;
+	background-color: rgba( 0, 0, 0, 0.5 );
+	overflow: hidden;
+}
+#container > .text > div > .title {
+	font-size: 50px;
+	font-weight: bold;
+	padding: 10px 10px 0 10px;
+}
+#container > .text > div > .content {
+	font-size: 32px;
+	padding: 0 10px 10px 10px;
+}

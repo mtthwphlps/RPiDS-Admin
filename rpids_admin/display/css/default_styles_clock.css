@@ -1,0 +1,31 @@
+/*
+Default screen styles
+*/
+
+#container > .clock > div {
+	width: 100%;
+}
+#container > .clock  {
+	color: #FFFFFF;
+	text-align: center;
+	margin: 0 0 0 0;
+}
+#container > .clock > #the_date {
+	font-size: 40px;
+	font-weight: bold;
+	margin: 25px 0 0 0;
+	width: 625px;
+	display: inline-block;
+	float: left;
+}
+#container > .clock > #the_time {
+	font-size: 85px;
+	line-height: 85px;
+	width: 625px;
+	display: inline-block;
+	float: left;
+}
+#container > .clock > #the_time > span {
+	display: inline-block;
+	height: 85px;
+}

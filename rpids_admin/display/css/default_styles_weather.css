@@ -1,0 +1,167 @@
+/*
+Default screen styles
+*/
+
+#container > .weather > div {
+	width: 100%;
+}
+#container > .weather > #camera {
+	text-align: center;
+	height: 100%;
+	width: 100%;
+}
+#container > .weather > #camera > img {
+	width: 100%;
+}
+
+#container > .weather {
+	color: #FFFFFF;
+}
+
+.weather > #weather {
+}
+.weather > #weather > #currentimage {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 185px;
+	height: 170px;
+	margin-left: 20px;
+}
+.weather > #weather > #currentimage > img {
+	width: 185px;
+	height: auto;
+}
+.weather > #weather > #currently {
+	position: absolute;
+	top: 0;
+	left: 225px;
+	width: 270px;
+	height: 110px;
+	text-align: right;
+	margin-top: 17px;
+}
+.weather > #weather > #currently > .temp {
+	font-size: 60px;
+	font-weight: bold;
+	line-height: 50px;
+	width: 250px;
+	float: left;
+	text-align: right;
+}
+.weather > #weather > #currently > .title {
+	font-size: 32px;
+	line-height: 38px;
+	width: 250px;
+	float: left;
+}
+.weather > #weather > #currently > .location {
+	font-size: 16px;
+	float: left;
+	width: 250px;
+}
+.weather > #weather > #forecast_n_alerts {
+	position: absolute;
+	top: 171px;
+	left: 15px;
+	height: 120px;
+	width: 470px;
+}
+.weather > #weather > #forecast_n_alerts > #forecast, .weather > #weather > #forecast_n_alerts > .alerts {
+	height: 120px;
+	width: 470px;
+}
+.weather > #weather > #forecast_n_alerts > #forecast > .forecast_day {
+	width: 235px;
+	height: 120px;
+	display: inline-block;
+	float: left;
+}
+.weather > #weather > #forecast_n_alerts > #forecast > .forecast_day > .day {
+	width: 235px;
+	height: 22px;
+	font-size: 16px;
+	background: #09128c;
+	border-top: #808080 1px solid;
+	border-bottom: #808080 1px solid;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+.weather > #weather > #forecast_n_alerts > #forecast > .forecast_day > .icon {
+	height: 96px;
+	float: left;
+	width: 95px;
+	display: inline-block;
+}
+.weather > #weather > #forecast_n_alerts > #forecast > .forecast_day > .icon > img {
+	width: 85px;
+	height: auto;
+	margin: 10px 0 0 5px;
+}
+.weather > #weather > #forecast_n_alerts > #forecast > .forecast_day > .forecast_right {
+	width: 135px;
+	height: 90px;
+	float: right;
+	display: inline-block;
+	margin: 5px 0 0 0;
+}
+.weather > #weather > #forecast_n_alerts > #forecast_n_alerts > #forecast > .forecast_day > .forecast_right > .title {
+}
+.weather > #weather > #forecast_n_alerts > #forecast > .forecast_day > .forecast_right > .temp {
+}
+.weather > #weather > #forecast_n_alerts > #forecast > .forecast_day > .forecast_right > .temp > .high {
+}
+.weather > #weather > #forecast_n_alerts > #forecast > .forecast_day > .forecast_right > .temp > .low {
+}
+.weather > #weather > #forecast_n_alerts > #forecast > #forecast0 {
+}
+.weather > #weather > #forecast_n_alerts > #forecast > #forecast1 {
+}
+.weather > #weather > #forecast_n_alerts > .alerts {
+}
+.weather > #weather > #forecast_n_alerts > .alerts > .alert_each {
+	height: 100%;
+	width: 100%;
+	padding-top: 5px;
+	text-align: center;
+}
+.weather > #weather > #forecast_n_alerts > .alerts > .alert_each > .alert_desc {
+	font-size: 18px;
+	font-weight: bold;
+}
+.weather > #weather > #forecast_n_alerts > .alerts > .alert_each > .alert_start {
+	font-size: 14px;
+}
+.weather > #weather > #forecast_n_alerts > .alerts > .alert_each > .alert_end {
+	font-size: 14px;
+}
+.weather > #weather > #forecast_n_alerts > .alerts > .weather_alert_notice {
+}
+.weather > #weather > #forecast_n_alerts > .alerts > .weather_alert_watch {
+	color: #FFFF00;
+}
+.weather > #weather > #forecast_n_alerts > .alerts > .weather_alert_warning {
+	background: #960000;
+}
+
+.weather > #weather #asof_credit {
+	position: absolute;
+	top: 320px;
+	left: 0;
+	height: 20px;
+	width: 275px;
+	margin: 0 0 0 25px;
+	font-size: 10px;
+	line-height: 10px;
+}
+.weather > #weather #wu_logo {
+	position: absolute;
+	top: 310px;
+	right: 0;
+	height: 33px;
+	width: 140px;
+	font-size: 10px;
+	line-height: 10px;
+	text-align: right;
+}
