@@ -9,282 +9,39 @@
 $rpids_timezone = get_option( 'rpids_timezone', 'America/New_York' );
 date_default_timezone_set( $rpids_timezone );
 
+// Set the version variables
+$version_str = 'RPiDS v2.0';
+$version_num = '2.0';
+
 // Start a session
 session_start();
 
 // WP table prefix function
-function rpids_tableprefix() {
-	global $wpdb;
-	if(is_multisite()) {
-		$table_prefix = $wpdb->base_prefix.''.get_current_blog_id().'';
-	} else {
-		$table_prefix = $wpdb->prefix.'';
+if( !function_exists( 'rpids_tableprefix' ) ) {
+	function rpids_tableprefix() {
+		global $wpdb;
+		if(is_multisite()) {
+			$table_prefix = $wpdb->base_prefix.''.get_current_blog_id().'';
+		} else {
+			$table_prefix = $wpdb->prefix.'';
+		}
+		return $table_prefix;
 	}
-	return $table_prefix;
 }
 
-// Load this now
-require_once( 'inc/rpids_cron.php' );
-
-// Add the every 10 minutes WP Cron
-function cron_add_10min( $schedules ) {
-	$schedules['10min'] = array(
-		'interval' => 600,
-		'display' => __( 'Every 10 minutes' )
-	);
-	return $schedules;
+// The RPiDS unserialize function
+if( !function_exists( 'rpids_unserialize' ) ) {
+	function rpids_unserialize( $string ) {
+		if( !is_array( $string ) ) {
+			return unserialize( $string );
+		} else {
+			return $string;
+		}
+	}
 }
-add_filter( 'cron_schedules', 'cron_add_10min' );
 
-// Run this on install
-function rpids_theme_install() {
-	global $wpdb; // We're doing DB work
-	
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	
-	// Add the various tables we need
-	$sql = "CREATE TABLE IF NOT EXISTS `" . rpids_tableprefix() . "rpids_status` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`timestamp` varchar(255) NOT NULL,
-		`title` text NOT NULL,
-		`h1` text NOT NULL,
-		`h2` text NOT NULL,
-		`p` text NOT NULL,
-		`img` text NOT NULL,
-		PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-	";
-	dbDelta($sql);
-	$sql = "CREATE TABLE IF NOT EXISTS `" . rpids_tableprefix() . "rpids_control` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`timestamp` varchar(255) NOT NULL,
-		`screen` varchar(255) NOT NULL,
-		`location` varchar(255) NOT NULL,
-		`nextpoweron` varchar(255) NOT NULL,
-		`nextpoweroff` varchar(255) NOT NULL,
-		`nextinputchange` varchar(255) NOT NULL,
-		`nextinput` varchar(255) NOT NULL,
-		`nextchannelchange` varchar(255) NOT NULL,
-		`nextchannel` varchar(255) NOT NULL,
-		PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-	";
-	dbDelta($sql);
-	$sql = "CREATE TABLE IF NOT EXISTS `" . rpids_tableprefix() . "rpids_log` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`timestamp` varchar(255) NOT NULL,
-		`by` varchar(255) NOT NULL,
-		`page` varchar(255) NOT NULL,
-		`ip` varchar(255) NOT NULL,
-		`data` varchar(255) NOT NULL,
-		PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-	";
-	dbDelta($sql);
-	$sql = "CREATE TABLE IF NOT EXISTS `" . rpids_tableprefix() . "rpids_rate_limit` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`timestamp` varchar(255) NOT NULL,
-		`sid` varchar(255) NOT NULL,
-		`ip` varchar(255) NOT NULL,
-		PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-	";
-	dbDelta($sql);
-	$sql = "CREATE TABLE IF NOT EXISTS `" . rpids_tableprefix() . "rpids_events` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`uniqueid` varchar(255) NOT NULL,
-		`eventid` varchar(255) NOT NULL,
-		`ccb_id` int(10) NOT NULL,
-		`timestamp` varchar(255) NOT NULL,
-		`date` varchar(255) NOT NULL,
-		`event_name` varchar(255) NOT NULL,
-		`event_description` varchar(255) NOT NULL,
-		`start_time` varchar(255) NOT NULL,
-		`end_time` varchar(255) NOT NULL,
-		`event_duration` varchar(255) NOT NULL,
-		`event_type` varchar(255) NOT NULL,
-		`location` varchar(255) NOT NULL,
-		`group_name` varchar(255) NOT NULL,
-		`group_id` int(10) NOT NULL,
-		`group_type` varchar(255) NOT NULL,
-		`grouping_name` varchar(255) NOT NULL,
-		`leader_name` varchar(255) NOT NULL,
-		`leader_id` varchar(255) NOT NULL,
-		`leader_phone` varchar(255) NOT NULL,
-		`leader_email` varchar(255) NOT NULL,
-		PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-	";
-	dbDelta($sql);
-	$sql = "CREATE TABLE IF NOT EXISTS `" . rpids_tableprefix() . "rpids_weather` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`location` varchar(255) NOT NULL,
-		`timestamp` varchar(255) NOT NULL,
-		`current_temp` varchar(255) NOT NULL,
-		`current_weather` varchar(255) NOT NULL,
-		`current_img` varchar(255) NOT NULL,
-		`today_maxtemp` varchar(255) NOT NULL,
-		`today_mintemp` varchar(255) NOT NULL,
-		`today_weather` varchar(255) NOT NULL,
-		`today_img` varchar(255) NOT NULL,
-		`tomorrow_maxtemp` varchar(255) NOT NULL,
-		`tomorrow_mintemp` varchar(255) NOT NULL,
-		`tomorrow_weather` varchar(255) NOT NULL,
-		`tomorrow_img` varchar(255) NOT NULL,
-		`updated` varchar(255) NOT NULL,
-		PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-	";
-	dbDelta($sql);
-	$sql = "CREATE TABLE IF NOT EXISTS `" . rpids_tableprefix() . "rpids_locations` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`location` varchar(255) NOT NULL,
-		`groups` text NOT NULL,
-		`weathercode` varchar(255) NOT NULL,
-		`weathermeasure` varchar(1) NOT NULL,
-		PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-	";
-	dbDelta($sql);
-	$sql = "CREATE TABLE IF NOT EXISTS `" . rpids_tableprefix() . "rpids_screens` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`screen` varchar(255) NOT NULL,
-		`location` varchar(255) NOT NULL,
-		`did` int(100) NOT NULL,
-		`update_data` text NOT NULL,
-		PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-	";
-	dbDelta($sql);
-	$sql = "CREATE TABLE IF NOT EXISTS `" . rpids_tableprefix() . "rpids_devices` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`did` int(10) NOT NULL,
-		`model` varchar(255) NOT NULL,
-		`hversion` varchar(255) NOT NULL,
-		`sversion` varchar(255) NOT NULL,
-		`type` varchar(255) NOT NULL,
-		`builder` varchar(255) NOT NULL,
-		PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-	";
-	dbDelta($sql);
-	$sql = "CREATE TABLE IF NOT EXISTS `" . rpids_tableprefix() . "rpids_layouts` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`width` int(10) NOT NULL,
-		`height` int(10) NOT NULL,
-		`bgimage` text NOT NULL,
-		`bgimagetype` varchar(255) NOT NULL,
-		`bgcolor` varchar(255) NOT NULL,
-		`startimage` text NOT NULL,
-		`items` text NOT NULL,
-		`lastmodified` varchar(255) NOT NULL,
-		PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-	";
-	dbDelta($sql);
-	$sql = "CREATE TABLE IF NOT EXISTS `" . rpids_tableprefix() . "rpids_group_links` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`rpids_group` varchar(255) NOT NULL,
-		`source_group` varchar(255) NOT NULL,
-		PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-	";
-	dbDelta($sql);
-	$sql = "CREATE TABLE IF NOT EXISTS `" . rpids_tableprefix() . "rpids_errors` (
-		`id` int(10) NOT NULL AUTO_INCREMENT,
-		`type` varchar(255) NOT NULL,
-		`data` text NOT NULL,
-		PRIMARY KEY (`id`)
-	) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-	";
-	dbDelta($sql);
-	add_option( "rpids_db_version", "2.0" );
-	
-	// Insert the default layouts
-	$items = serialize( array(
-		"type" => 'slides',
-		"id" => '1',
-		"top" => '0',
-		"left" => '0',
-		"width" => '100',
-		"height" => '100'
-	) );
-	$wpdb->insert( rpids_tableprefix() . "rpids_layouts", array(
-		"name" => 'Graphic Only, Full Screen Scaled',
-		"type" => 'scale', 
-		"width" => '100',
-		"height" => '100',
-		"bgimage" => '',
-		"bgimagetype" => '',
-		"bgcolor" => '#000000',
-		"startimage" => '/display/img/rpids_full_screen.jpg',
-		"items" => $items,
-		"lastmodified" => '1420839974',
-		"locked" => '1'
-	));
-	$items = serialize( array(
-		array(
-			"type" => 'slides',
-			"id" => '1',
-			"top" => '0.46',
-			"left" => '0.26',
-			"width" => '66.66',
-			"height" => '66.66'
-		),
-		array(
-			"type" => 'text',
-			"id" => '1',
-			"top" => '67.59',
-			"left" => '0.26',
-			"width" => '40.31',
-			"height" => '31.94'
-		),
-		array(
-			"type" => 'schedule',
-			"id" => '1',
-			"top" => '0.46',
-			"left" => '67.18',
-			"width" => '32.55',
-			"height" => '81.01'
-		),
-		array(
-			"type" => 'clock',
-			"id" => '1',
-			"top" => '81.94',
-			"left" => '67.18',
-			"width" => '32.55',
-			"height" => '17.59'
-		),
-		array(
-			"type" => 'weather',
-			"id" => '1',
-			"top" => '67.59',
-			"left" => '40.88',
-			"width" => '26.04',
-			"height" => '31.94'
-		)
-	) );
-	$wpdb->insert( rpids_tableprefix() . "rpids_layouts", array(
-		"name" => 'Graphic, Text, Schedule, Weather and Clock. Scaled.',
-		"type" => 'scale', 
-		"width" => '100',
-		"height" => '100',
-		"bgimage" => '',
-		"bgimagetype" => '',
-		"bgcolor" => '#000000',
-		"startimage" => '/display/img/rpids_full_screen.jpg',
-		"items" => $items,
-		"lastmodified" => '1420839974',
-		"locked" => '1'
-	));
-	
-	// Add the RPiDS event hook (that we use for all cron jobs)
-	wp_schedule_event( time(), '10min', 'rpids_10min_event_hook' );
-}
-add_action( 'after_switch_theme', 'rpids_theme_install' );
-
-// Connect the cron hook to the function
-add_action( 'rpids_10min_event_hook', 'rpids_every_10_mins' );
+// Load these now
+require_once( 'inc/rpids_log.class.php' );
 
 // Near-real-time sync
 function post_updated_sync( $post_id ) {
@@ -355,6 +112,88 @@ function post_updated_sync( $post_id ) {
 }
 add_action( 'save_post', 'post_updated_sync' );
 
+// Remove unused admin pages
+define( 'DISALLOW_FILE_EDIT', true );
+function rpids_remove_unused_admin_pages() {
+	remove_menu_page( 'edit.php' );
+	remove_menu_page( 'edit.php?post_type=page' );
+}
+add_action( 'admin_menu', 'rpids_remove_unused_admin_pages' );
+
+// Customize the At A Glance box
+function rpids_at_a_glance_customize() {
+	// Globals
+	global $rpids_settings;
+	global $wpdb;
+	global $rpids_layout_widgets;
+	
+	// First the custom posts...
+    $args = array(
+        'public' => true,
+        '_builtin' => false
+    );
+    $output = 'object';
+    $operator = 'and';
+    $post_types = get_post_types( $args, $output, $operator );
+    foreach ( $post_types as $post_type ) {
+        $num_posts = wp_count_posts( $post_type->name );
+        $num = number_format_i18n( $num_posts->publish );
+        $text = _n( $post_type->labels->singular_name, $post_type->labels->name, intval( $num_posts->publish ) );
+        if ( current_user_can( 'edit_posts' ) ) {
+            $output = '<a href="edit.php?post_type=' . $post_type->name . '">' . $num . ' ' . $text . '</a>';
+            echo '<li class="post-count ' . $post_type->name . '-count">' . $output . '</li>';
+        }
+    }
+	
+	// Now the locations
+	$locations = $rpids_settings->locations();
+	$location_count = count( $locations );
+	unset( $locations );
+	echo '<li class="post-count location-count"><a href="admin.php?page=rpids_settings_locations">' . $location_count . ' Locations</a></li>';
+	unset( $location_count );
+	
+	// Now the screens
+	$screens = $rpids_settings->all_screens();
+	$screen_count = count( $screens );
+	unset( $screens );
+	echo '<li class="post-count screen-count"><a href="admin.php?page=rpids_settings_locations">' . $screen_count . ' Screens</a></li>';
+	unset( $screen_count );
+	
+	// And the layouts
+	$sql = "SELECT * FROM `" . rpids_tableprefix() . "rpids_layouts`;";
+	$layouts = $wpdb->get_results( $sql, ARRAY_A );
+	$layout_count = $wpdb->num_rows;
+	unset( $sql );
+	unset( $layouts );
+	echo '<li class="post-count layout-count"><a href="admin.php?page=rpids_settings_layouts">' . $layout_count . ' Layouts</a></li>';
+	unset( $layout_count );
+	
+	// The devices
+	$device_count = count( $rpids_settings->listDevices() );
+	echo '<li class="post-count device-count"><a href="admin.php?page=rpids_settings_devices">' . $device_count . ' Devices</a></li>';
+	
+	// The widgets
+	$widget_count = 0;
+	foreach( $rpids_layout_widgets as $widget ) {
+		$widget_count++;
+	}
+	echo '<li class="post-count widget-count"><a href="#">' . $widget_count . ' Widgets</a></li>';
+	unset( $widget_count );
+	unset( $widget );
+}
+add_action( 'dashboard_glance_items', 'rpids_at_a_glance_customize' );
+
+// Add the dasboard box
+function rpids_dashboard_box() {
+	wp_add_dashboard_widget('rpids_dashboard_box', 'RPiDS', 'rpids_dashboard_content');
+}
+add_action('wp_dashboard_setup', 'rpids_dashboard_box' );
+
+function rpids_dashboard_content() { ?>
+	<strong>Hi!</strong><br />
+	This box will be used for something, don't know what for yet.
+<?php }
+
 // This lets us display notices using sessions (useful when we're redirected after a notice is set)
 function rpids_admin_notice() {
 	if( @$_SESSION["rpids_notice"] != '' ) {
@@ -365,14 +204,50 @@ function rpids_admin_notice() {
 }
 add_action('admin_notices', 'rpids_admin_notice');
 
+// Let's make a curl function
+function rpids_curl( $url, $format = 'object', $timeout = 60, $ssl = 1 ) {
+	$user_agent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)";
+	$process = curl_init( $url );
+	curl_setopt( $process, CURLOPT_USERAGENT, $user_agent );
+	curl_setopt( $process, CURLOPT_TIMEOUT, $timeout );
+	if( $ssl == 1 ) {
+		curl_setopt( $process, CURLOPT_SSL_VERIFYPEER, 0 );
+		curl_setopt( $process, CURLOPT_SSL_VERIFYHOST, 0 );
+	} else {
+		curl_setopt( $process, CURLOPT_SSL_VERIFYPEER, 0 );
+		curl_setopt( $process, CURLOPT_SSL_VERIFYHOST, 0 );
+	}
+	curl_setopt( $process, CURLOPT_RETURNTRANSFER, 1 );
+	curl_setopt( $process, CURLOPT_FOLLOWLOCATION, 1 );
+	curl_setopt( $process, CURLOPT_CAINFO, dirname(__FILE__) . '/cacert.pem' );
+	$data = curl_exec( $process );
+	curl_close( $process );
+	if( $data === false ) {
+		throw new Exception( "Curl error: " . curl_error( $process ) );
+	} else {
+		if( $format == 'object' ) {
+			return json_decode( $data );
+		} else {
+			return $data;
+		}
+	}
+}
+
 // Include other files
+require_once( 'inc/rpids_install.php' ); // Global stuff
 require_once( 'inc/rpids_global.php' ); // Global stuff
+require_once( 'inc/rpids_widgets.php' ); // The widgets
 require_once( 'inc/rpids_api.php' ); // API (outbound stuff)
 require_once( 'inc/rpids_ajax.php' ); // AJAX (inbound API calls)
-require_once( 'inc/rpids_setting.php' ); // Settings
 require_once( 'inc/rpids_setting.class.php' ); // The setting class (used almost everywhere)
-require_once( 'inc/rpids_slides.php' ); // The slides custom post
-require_once( 'inc/rpids_textslides.php' ); // The text slides custom post
-require_once( 'inc/rpids_events.php' ); // The events/schedule custom post
+require_once( 'inc/pages/rpids_settings.php' ); // Settings
+require_once( 'inc/rpids_config.php' ); // Config
+require_once( 'inc/rpids_cron.php' ); // Cron
+
+// Now include the default widgets
+require_once( 'default_widgets/rpids_slides.php' ); // The slides custom post
+require_once( 'default_widgets/rpids_textslides.php' ); // The text slides custom post
+require_once( 'default_widgets/rpids_time.php' ); // The date/time widget
+require_once( 'default_widgets/rpids_weather.php' ); // The weather widget
 
 ?>
